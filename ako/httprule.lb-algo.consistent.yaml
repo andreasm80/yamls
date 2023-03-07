@@ -1,0 +1,16 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: httprule-fruit
+   namespace: fruit
+spec:
+  fqdn: fruit-tkgm.carefor.some-dns.net
+  paths:
+  - target: /
+    loadBalancerPolicy:
+      algorithm: LB_ALGORITHM_CONSISTENT_HASH
+      hash: LB_ALGORITHM_CONSISTENT_HASH_SOURCE_IP_ADDRESS
+    healthMonitors:
+      - System-HTTP
+    applicationPersistence: System-Persistence-Http-Cookie
+

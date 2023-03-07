@@ -309,3 +309,58 @@ spec:
     - port: 5678 # Default port for image
 ```
 
+## AKO HTTPrule - Persistence
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: httprule-fruit
+   namespace: fruit
+spec:
+  fqdn: fruit-tkgm.carefor.some-dns.net
+  paths:
+  - target: /
+    loadBalancerPolicy:
+      algorithm: LB_ALGORITHM_CONSISTENT_HASH
+      hash: LB_ALGORITHM_CONSISTENT_HASH_SOURCE_IP_ADDRESS
+    healthMonitors:
+      - System-HTTP
+    applicationPersistence: System-Persistence-Http-Cookie
+```
+## AKO HostRule - SSL termination and SSL Certificates
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: my-ingress-example-http-rule
+  namespace: fruit
+spec:
+  virtualhost:
+    fqdn: fruit.guzware.net # mandatory
+    fqdnType: Exact
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "guzware ECDSA"
+        type: ref
+        alternateCertificate:
+          name: "Guzware RSA"
+          type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge
+```
+## AKO Default route certificate
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: router-certs-default
+  namespace: avi-system
+type: kubernetes.io/tls
+data:
+  tls.crt: base64 - RSA
+  tls.key: base64 - RSA
+  alt.crt: base64 - ECDSA
+  alt.key: base64 - ECDSA
+```
+

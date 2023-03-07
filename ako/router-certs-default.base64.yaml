@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: router-certs-default
+  namespace: avi-system
+type: kubernetes.io/tls
+data:
+  tls.crt: base64 - RSA
+  tls.key: base64 - RSA
+  alt.crt: base64 - ECDSA
+  alt.key: base64 - ECDSA

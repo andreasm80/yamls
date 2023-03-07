@@ -1,0 +1,19 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: my-ingress-example-http-rule
+  namespace: fruit
+spec:
+  virtualhost:
+    fqdn: fruit.guzware.net # mandatory
+    fqdnType: Exact
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "guzware ECDSA"
+        type: ref
+        alternateCertificate:
+          name: "Guzware RSA"
+          type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge
