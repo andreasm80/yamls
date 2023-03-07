@@ -523,4 +523,18 @@ spec:
         -----END CERTIFICATE-----
 ```
                                                                                                                                                                                               
-~                                     
+## AKO HTTPRule Health Monitor
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: ako-pinnoiped-http-rule
+   namespace: pinniped-supervisor
+spec:
+  fqdn: pinniped.guzware.net
+  paths:
+  - target: /
+    healthMonitors:
+    - pinniped-https
+```
+
