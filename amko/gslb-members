@@ -1,0 +1,31 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: Base64
+    server: https://10.170.0.10:6443
+  name: k8slab
+- cluster:
+    certificate-authority-data:
+    server: https://192.168.85.1:6443
+  name: tkgs-cluster-1
+contexts:
+- context:
+    cluster: k8slab
+    user: k8slab-admin
+  name: k8slab-admin@k8slab
+- context:
+    cluster: tkgs-cluster-1
+    user: tkgs-cluster-1-admin
+  name: tkgs-cluster-1-admin@tkgs-cluster-1
+current-context: tkgs-cluster-1-admin@tkgs-cluster-1
+kind: Config
+preferences: {}
+users:
+- name: k8slab-admin
+  user:
+    client-certificate-data: Base64
+    client-key-data: Base64
+- name: tkgs-cluster-1-admin
+  user:
+    client-certificate-data: Base64
+    client-key-data: Base64

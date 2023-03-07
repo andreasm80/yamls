@@ -1,0 +1,26 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: banana-app
+  labels:
+    app: banana
+  namespace: fruit
+spec:
+  containers:
+    - name: banana-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=This is Site B - Remote Site"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: banana-service
+  namespace: fruit
+spec:
+  selector:
+    app: banana
+  ports:
+    - port: 5678 # Default port for image

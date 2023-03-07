@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-example
+  labels:
+    app: gslb
+  namespace: fruit
+#  annotations:
+#    ako.vmware.com/enable-tls: "true"
+
+spec:
+  ingressClassName: avi-lb
+  rules:
+    - host: fruit-site-2.lab.guzware.net
+      http:
+        paths:
+        - path: /apple
+          pathType: Prefix
+          backend:
+            service:
+              name: apple-service
+              port:
+                number: 5678
+        - path: /banana
+          pathType: Prefix
+          backend:
+            service:
+              name: banana-service
+              port:
+                number: 5678
+---
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  namespace: fruit
+  name: gslb-host-rule-fruit
+spec:
+  virtualhost:
+    fqdn: fruit-site-2.lab.guzware.net
+    enableVirtualHost: true
+    gslb:
+      fqdn: fruit.gslb.guzware.net
+
