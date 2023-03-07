@@ -120,3 +120,72 @@ mountPath: /log
 logFile: avi.log
 ```
 
+## AviInfraSetting - enable BGP (override default settings)
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: AviInfraSetting
+metadata:
+  name: enable-bgp-fruit
+spec:
+  seGroup:
+    name: Default-Group
+  network:
+    vipNetworks:
+      - networkName: vds-tkc-frontend-l7-vlan-1028
+        cidr: 10.102.8.0/24
+    nodeNetworks:
+      - networkName: vds-tkc-workload-vlan-1026
+        cidrs:
+        - 10.102.6.0/24
+    enableRhi: true
+    bgpPeerLabels:
+      - cPodRouter
+```
+
+## AKO Ingress Class using AviInfraSetting
+```
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: avi-lb-bgp
+spec:
+  controller: ako.vmware.com/avi-lb
+  parameters:
+    apiGroup: ako.vmware.com
+    kind: AviInfraSetting
+    name: enable-bgp-fruit
+```
+
+## Ingress example with custom ingress class to enable BGP
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-example
+  namespace: fruit
+#  annotations:
+#    aviinfrasetting.ako.vmware.com/name: "enable-bgp-fruit"
+#    ako.vmware.com/enable-tls: "true"
+
+spec:
+  ingressClassName: avi-lb-bgp
+  rules:
+    - host: fruit-tkgs.you-have.your-domain.here
+      http:
+        paths:
+        - path: /apple
+          pathType: Prefix
+          backend:
+            service:
+              name: apple-service
+              port:
+                number: 5678
+        - path: /banana
+          pathType: Prefix
+          backend:
+            service:
+              name: banana-service
+              port:
+                number: 5678
+```
+

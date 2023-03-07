@@ -1,0 +1,11 @@
+
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: avi-lb-bgp
+spec:
+  controller: ako.vmware.com/avi-lb
+  parameters:
+    apiGroup: ako.vmware.com
+    kind: AviInfraSetting
+    name: enable-bgp-fruit

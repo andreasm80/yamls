@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-example
+  namespace: fruit
+#  annotations:
+#    aviinfrasetting.ako.vmware.com/name: "enable-bgp-fruit"
+#    ako.vmware.com/enable-tls: "true"
+
+spec:
+  ingressClassName: avi-lb-bgp
+  rules:
+    - host: fruit-tkgs.you-have.your-domain.here
+      http:
+        paths:
+        - path: /apple
+          pathType: Prefix
+          backend:
+            service:
+              name: apple-service
+              port:
+                number: 5678
+        - path: /banana
+          pathType: Prefix
+          backend:
+            service:
+              name: banana-service
+              port:
+                number: 5678
+

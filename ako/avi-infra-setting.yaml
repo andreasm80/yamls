@@ -1,0 +1,19 @@
+
+apiVersion: ako.vmware.com/v1alpha1
+kind: AviInfraSetting
+metadata:
+  name: enable-bgp-fruit
+spec:
+  seGroup:
+    name: Default-Group
+  network:
+    vipNetworks:
+      - networkName: vds-tkc-frontend-l7-vlan-1028
+        cidr: 10.102.8.0/24
+    nodeNetworks:
+      - networkName: vds-tkc-workload-vlan-1026
+        cidrs:
+        - 10.102.6.0/24
+    enableRhi: true
+    bgpPeerLabels:
+      - cPodRouter
