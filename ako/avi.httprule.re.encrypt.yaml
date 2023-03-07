@@ -1,0 +1,19 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: ako-pinnoiped-http-rule
+   namespace: pinniped-supervisor
+spec:
+  fqdn: pinniped.guzware.net
+  paths:
+  - target: /
+    healthMonitors:
+    - pinniped-https
+    tls: ## This is a re-encrypt to pool
+      type: reencrypt # Mandatory [re-encrypt]
+      sslProfile: System-Standard-PFS
+      destinationCA:  |-
+        -----BEGIN CERTIFICATE-----
+        -----END CERTIFICATE-----
+~                                                                                                                                                                                                         
+~                                     

@@ -1,0 +1,22 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: pinniped-http-rule
+  namespace: pinniped-supervisor
+spec:
+  virtualhost:
+    fqdn: pinniped.guzware.net # mandatory
+    fqdnType: Exact
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "pinniped-cert"
+        type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge
+    applicationProfile: app-profile-pinniped
+    tcpSettings:
+      listeners:
+      - port: 443
+        enableSSL: true
+

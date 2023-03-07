@@ -1,0 +1,62 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: lb-unifi-tcp
+  namespace: unifi
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: unifi.int.guzware.net
+#    ako.vmware.com/enable-shared-vip: "shared-vip-key-1"
+spec:
+  ports:
+    - name: device-comm
+      protocol: TCP
+      port: 8080
+    - name: default-console
+      protocol: TCP
+      port: 8443
+    - name: secure-redirect
+      protocol: TCP
+      port: 8843
+    - name: http-redirect
+      protocol: TCP
+      port: 8880
+#    - name: speedtest
+#      protocol: TCP
+#      port: 6789
+    - name: stun
+      protocol: UDP
+      port: 3478
+    - name: unifi-disc
+      port: 10001
+      protocol: UDP
+#    - name: unifi-disc-12
+#      port: 1900
+#      protocol: UDP
+  selector:
+    name: unifi-controller
+  type: LoadBalancer
+  loadBalancerIP: 10.150.11.199
+#---
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: lb-unifi-udp
+#  namespace: unifi
+#  annotations:
+#    ako.vmware.com/enable-shared-vip: "shared-vip-key-1"
+#spec:
+#  ports:
+#    - name: stun
+#      protocol: UDP
+#      port: 3478
+#    - name: unifi-disc
+#      port: 10001
+#      protocol: UDP
+#    - name: unifi-disc-12
+#      port: 1900
+#      protocol: UDP
+#  selector:
+#    name: unifi-controller
+#  type: LoadBalancer
+#  loadBalancerIP: 10.150.11.199
+

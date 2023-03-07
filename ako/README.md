@@ -308,8 +308,24 @@ spec:
   ports:
     - port: 5678 # Default port for image
 ```
-
-## AKO HTTPrule - Persistence
+## AKO HTTPRule - Persistence 
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: fruit-httprule
+   namespace: fruit
+spec:
+  fqdn: fruit-tkgs.carefor.some-dns.net
+  paths:
+  - target: /
+    loadBalancerPolicy:
+      algorithm: LB_ALGORITHM_ROUND_ROBIN
+    healthMonitors:
+      - System-HTTP
+    applicationPersistence: System-Persistence-Http-Cookie
+```
+## AKO HTTPRule - Persistence - consistent hash
 ```
 apiVersion: ako.vmware.com/v1alpha1
 kind: HTTPRule
@@ -363,4 +379,148 @@ data:
   alt.crt: base64 - ECDSA
   alt.key: base64 - ECDSA
 ```
-
+## AKO Hostrule trying to force TLS on SharedL7 object - not working I think...
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: avi-host-rule
+  namespace: avi-system
+spec:
+  virtualhost:
+    fqdn: 'tkgs-v1-cluster--Shared-L7-0.admin.avi.andreasmlab.net' # mandatory
+    fqdnType: Contains
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "wildcard-certificate"
+        type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge
+```
+## AKO HTTPRule - Re-Encrypt
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: unifi-http-rule
+   namespace: unifi
+spec:
+  fqdn: unifi-mgmt.guzware.net
+  paths:
+  - target: /
+    tls: ## This is a re-encrypt to pool
+      type: reencrypt # Mandatory [re-encrypt]
+      sslProfile: System-Standard-PFS
+      #pkiProfile: 
+```
+## AKO ServiceType LoadBalancer - multi ports - TCP/UDP - same VIP
+```
+kind: Service
+apiVersion: v1
+metadata:
+  name: lb-unifi-tcp
+  namespace: unifi
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: unifi.int.guzware.net
+#    ako.vmware.com/enable-shared-vip: "shared-vip-key-1"
+spec:
+  ports:
+    - name: device-comm
+      protocol: TCP
+      port: 8080
+    - name: default-console
+      protocol: TCP
+      port: 8443
+    - name: secure-redirect
+      protocol: TCP
+      port: 8843
+    - name: http-redirect
+      protocol: TCP
+      port: 8880
+#    - name: speedtest
+#      protocol: TCP
+#      port: 6789
+    - name: stun
+      protocol: UDP
+      port: 3478
+    - name: unifi-disc
+      port: 10001
+      protocol: UDP
+#    - name: unifi-disc-12
+#      port: 1900
+#      protocol: UDP
+  selector:
+    name: unifi-controller
+  type: LoadBalancer
+  loadBalancerIP: 10.150.11.199
+#---
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: lb-unifi-udp
+#  namespace: unifi
+#  annotations:
+#    ako.vmware.com/enable-shared-vip: "shared-vip-key-1"
+#spec:
+#  ports:
+#    - name: stun
+#      protocol: UDP
+#      port: 3478
+#    - name: unifi-disc
+#      port: 10001
+#      protocol: UDP
+#    - name: unifi-disc-12
+#      port: 1900
+#      protocol: UDP
+#  selector:
+#    name: unifi-controller
+#  type: LoadBalancer
+#  loadBalancerIP: 10.150.11.199
+```
+## AKO HostRule - with TCP listeners
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: pinniped-http-rule
+  namespace: pinniped-supervisor
+spec:
+  virtualhost:
+    fqdn: pinniped.guzware.net # mandatory
+    fqdnType: Exact
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "pinniped-cert"
+        type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge
+    applicationProfile: app-profile-pinniped
+    tcpSettings:
+      listeners:
+      - port: 443
+        enableSSL: true
+```
+## AKO HTTPRule - Re-Encrypt
+```
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: ako-pinnoiped-http-rule
+   namespace: pinniped-supervisor
+spec:
+  fqdn: pinniped.guzware.net
+  paths:
+  - target: /
+    healthMonitors:
+    - pinniped-https
+    tls: ## This is a re-encrypt to pool
+      type: reencrypt # Mandatory [re-encrypt]
+      sslProfile: System-Standard-PFS
+      destinationCA:  |-
+        -----BEGIN CERTIFICATE-----
+        -----END CERTIFICATE-----
+```
+                                                                                                                                                                                              
+~                                     

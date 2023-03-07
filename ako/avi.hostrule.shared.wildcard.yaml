@@ -1,0 +1,16 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HostRule
+metadata:
+  name: avi-host-rule
+  namespace: avi-system
+spec:
+  virtualhost:
+    fqdn: 'tkgs-v1-cluster--Shared-L7-0.admin.avi.andreasmlab.net' # mandatory
+    fqdnType: Contains
+    enableVirtualHost: true
+    tls: # optional
+      sslKeyCertificate:
+        name: "wildcard-certificate"
+        type: ref
+      sslProfile: System-Standard-PFS
+      termination: edge

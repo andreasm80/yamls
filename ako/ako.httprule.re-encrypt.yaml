@@ -1,0 +1,14 @@
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: unifi-http-rule
+   namespace: unifi
+spec:
+  fqdn: unifi-mgmt.guzware.net
+  paths:
+  - target: /
+    tls: ## This is a re-encrypt to pool
+      type: reencrypt # Mandatory [re-encrypt]
+      sslProfile: System-Standard-PFS
+      #pkiProfile: 
+
