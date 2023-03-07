@@ -263,3 +263,45 @@ ENABLE_AUTOSCALER: false
 # ANTREA_TRACEFLOW: false
 ANTREA_NODEPORTLOCAL: true
 ```
+## AKODeploymentConfig
+```
+apiVersion: networking.tkg.tanzu.vmware.com/v1alpha1
+kind: AKODeploymentConfig
+metadata:
+  name: ako-tkg-wld-1-cluster
+spec:
+  adminCredentialRef:
+    name: avi-controller-credentials
+    namespace: tkg-system-networking
+  certificateAuthorityRef:
+    name: avi-controller-ca
+    namespace: tkg-system-networking
+  cloudName: nsx-t
+  clusterSelector:
+    matchLabels:
+      ako-tkg-wld-1-cluster: "tkg-wld-1-vip"
+  controller: 192.168.100.50
+  dataNetwork:
+    cidr: 192.168.143.0/24
+    name: tkgm-wld-svc-vip-1
+  controlPlaneNetwork:
+    cidr: 192.168.141.0/24
+    name: tkgm-wld-endpoint-vip-1
+  extraConfigs:
+    cniPlugin: antrea
+    disableStaticRouteSync: false                               # required
+    ingress:
+      defaultIngressController: true
+      disableIngressClass: false                                # required
+      nodeNetworkList:                                          # required
+        - cidrs:
+            - 192.168.111.0/24
+          networkName: ls-tkgm-wld-network-1
+      serviceType: NodePortLocal                                # required
+      shardVSSize: SMALL                                        # required
+    l4Config:
+      autoFQDN: default
+    networksConfig:
+      nsxtT1LR: /infra/tier-1s/Tier-1-data
+  serviceEngineGroup: tkgm-se-group
+```
