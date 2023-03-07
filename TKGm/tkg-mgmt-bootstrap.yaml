@@ -1,8 +1,3 @@
-# TKGm section
-In this section I have collected all the relevant yaml defintions I have been using for TKGm
-
-## TKG Management Cluster bootstrap yaml
-```
 #! ---------------
 #! Basic config
 #! -------------
@@ -148,5 +143,4 @@ IDENTITY_MANAGEMENT_TYPE: none
 #OIDC_IDENTITY_PROVIDER_NAME: ""
 #OIDC_IDENTITY_PROVIDER_SCOPES: ""
 #OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: ""
-```
 
