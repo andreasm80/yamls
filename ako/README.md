@@ -189,7 +189,7 @@ spec:
                 number: 5678
 ```
 
-## App apple used to test Ingress
+## App "apple" used to test Ingress
 ```
 kind: Pod
 apiVersion: v1
@@ -218,7 +218,7 @@ spec:
   ports:
     - port: 5678 # Default port for image
 ```
-## APP banana used to test Ingress
+## App "banana" used to test Ingress
 ```
 kind: Pod
 apiVersion: v1
@@ -247,3 +247,65 @@ spec:
   ports:
     - port: 5678 # Default port for image
 ```
+### App "apple" to test Ingress with NodePort
+```
+kind: Pod
+apiVersion: v1
+metadata:
+  name: apple-app
+  labels:
+    app: apple
+  namespace: fruit
+spec:
+  containers:
+    - name: apple-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=apple"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: apple-service
+  namespace: fruit
+spec:
+  type: NodePort
+  selector:
+    app: apple
+  ports:
+    - port: 5678 # Default port for image
+```
+
+### App "banana" to test Ingress with NodePort
+```
+kind: Pod
+apiVersion: v1
+metadata:
+  name: banana-app
+  labels:
+    app: banana
+  namespace: fruit
+spec:
+  containers:
+    - name: banana-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=banana"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: banana-service
+  namespace: fruit
+spec:
+  type: NodePort
+  selector:
+    app: banana
+  ports:
+    - port: 5678 # Default port for image
+```
+
